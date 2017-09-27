@@ -45,6 +45,11 @@ public class BannerPositionFrame: NSObject {
         self.endFrame = endFrame
     }
     
+    public func updateFrameWidth(width: CGFloat) {
+        self.startFrame.size.width = width
+        self.endFrame.size.width = width
+    }
+    
     public init(bannerPosition: BannerPosition,
                 bannerWidth: CGFloat,
                 bannerHeight: CGFloat,

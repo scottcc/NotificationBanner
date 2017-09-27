@@ -331,7 +331,10 @@ public class BaseNotificationBanner: UIView {
         Changes the frame of the notificaiton banner when the orientation of the device changes
     */
     private dynamic func onOrientationChanged() {
-        self.frame = CGRect(x: self.frame.origin.x, y: self.frame.origin.y, width: appWindow.frame.width, height: self.frame.height)
+        // JS: the width/height of the app window contain the **old** values when this method fires, so use the window's current
+        //     height as the new width of the banner. Also, update the start/end frame widths so that the animations don't break
+        self.frame = CGRect(x: self.frame.origin.x, y: self.frame.origin.y, width: appWindow.frame.height, height: self.frame.height)
+        self.bannerPositionFrame?.updateFrameWidth(width: appWindow.frame.height)
     }
     
     /**
