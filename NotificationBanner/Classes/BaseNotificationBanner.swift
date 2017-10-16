@@ -331,36 +331,36 @@ public class BaseNotificationBanner: UIView {
         Changes the frame of the notificaiton banner when the orientation of the device changes
     */
     private dynamic func onOrientationChanged() {
-        // swizzle from UIDeviceOrientation to UIInterfaceOrientationMask
-        var orientation: UIInterfaceOrientationMask?
-        switch (UIDevice.current.orientation) {
-        case .portrait:
-            orientation = .portrait
-            break
-        case .landscapeLeft:
-            orientation = .landscapeLeft
-            break
-        case .landscapeRight:
-            orientation = .landscapeRight
-            break
-        case .portraitUpsideDown:
-            orientation = .portraitUpsideDown
-            break
-        case .faceDown: break
-        case .faceUp: break
-        case .unknown: break
-        }
-        
-        // get the interface orientations that the app currently supports
-        let supportedOrientations = self.parentViewController?.supportedInterfaceOrientations
-        
-        // if we get a value for both, compare and rotate if the app is allowed to
-        if let orientation = orientation, let supportedOrientations = supportedOrientations {
-            if supportedOrientations.contains(orientation) {
-                // the width/height of the app window contain the **old** values when this method fires, so use the window's current
-                // height as the new width of the banner. Also, update the start/end frame widths so that the animations don't break
-                self.frame = CGRect(x: self.frame.origin.x, y: self.frame.origin.y, width: appWindow.frame.height, height: self.frame.height)
-                self.bannerPositionFrame?.updateFrameWidth(width: appWindow.frame.height)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            // swizzle from UIDeviceOrientation to UIInterfaceOrientationMask
+            var orientation: UIInterfaceOrientationMask?
+            switch (UIDevice.current.orientation) {
+            case .portrait:
+                orientation = .portrait
+                break
+            case .landscapeLeft:
+                orientation = .landscapeLeft
+                break
+            case .landscapeRight:
+                orientation = .landscapeRight
+                break
+            case .portraitUpsideDown:
+                orientation = .portraitUpsideDown
+                break
+            case .faceDown: break
+            case .faceUp: break
+            case .unknown: break
+            }
+            
+            // get the interface orientations that the app currently supports
+            let supportedOrientations = self.parentViewController?.supportedInterfaceOrientations
+            
+            // if we get a value for both, compare and rotate if the app is allowed to
+            if let orientation = orientation, let supportedOrientations = supportedOrientations {
+                if supportedOrientations.contains(orientation) {
+                    self.frame = CGRect(x: self.frame.origin.x, y: self.frame.origin.y, width: self.appWindow.frame.width, height: self.frame.height)
+                    self.bannerPositionFrame?.updateFrameWidth(width: self.appWindow.frame.width)
+                }
             }
         }
     }
