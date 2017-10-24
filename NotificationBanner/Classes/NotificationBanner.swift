@@ -75,6 +75,7 @@ public class NotificationBanner: BaseNotificationBanner {
         titleLabel!.font = UIFont.systemFont(ofSize: 17.5, weight: UIFontWeightBold)
         titleLabel!.textColor = .white
         titleLabel!.text = title
+        titleLabel!.textAlignment = .center
         labelsView.addSubview(titleLabel!)
         
         titleLabel!.snp.makeConstraints { (make) in
@@ -95,6 +96,7 @@ public class NotificationBanner: BaseNotificationBanner {
             subtitleLabel!.numberOfLines = 1
             subtitleLabel!.textColor = .white
             subtitleLabel!.text = subtitle
+            subtitleLabel!.textAlignment = .center
             labelsView.addSubview(subtitleLabel!)
             
             subtitleLabel!.snp.makeConstraints { (make) in
