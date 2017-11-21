@@ -37,7 +37,15 @@ public class BaseNotificationBanner: UIView {
     public weak var delegate: NotificationBannerDelegate?
     
     /// The height of the banner when it is presented
-    public var bannerHeight: CGFloat = 64.0
+    private var _bannerHeight: CGFloat = 64.0
+    public var bannerHeight: CGFloat {
+        set {
+            self._bannerHeight = newValue
+        }
+        get {
+            return self._bannerHeight + self.getSpacerHeight()
+        }
+    }
     
     /// The topmost label of the notification if a custom view is not desired
     public internal(set) var titleLabel: MarqueeLabel?
@@ -54,6 +62,12 @@ public class BaseNotificationBanner: UIView {
 
     /// The amount of time to animate hiding the banner away
     public var dismissAnimationDuration = 0.5
+    
+    public var shouldAdjustSpacerHeight = true {
+        didSet {
+            self.createBannerConstraints(for: self.bannerPosition)
+        }
+    }
     
     /// If false, the banner will not be dismissed until the developer programatically dismisses it
     public var autoDismiss: Bool = true {
@@ -99,7 +113,7 @@ public class BaseNotificationBanner: UIView {
     private let appWindow: UIWindow = UIApplication.shared.delegate!.window!!
     
     /// A view that helps the spring animation look nice when the banner appears
-    private var spacerView: UIView!
+    internal var spacerView: UIView!
     
     /// The view controller to display the banner on. This is useful if you are wanting to display a banner underneath a navigation bar
     private weak var parentViewController: UIViewController?
@@ -179,7 +193,7 @@ public class BaseNotificationBanner: UIView {
             }
             make.left.equalToSuperview()
             make.right.equalToSuperview()
-            make.height.equalTo(10)
+            make.height.equalTo(getSpacerHeight())
         }
         
         contentView.snp.remakeConstraints { (make) in
@@ -358,6 +372,7 @@ public class BaseNotificationBanner: UIView {
             // if we get a value for both, compare and rotate if the app is allowed to
             if let orientation = orientation, let supportedOrientations = supportedOrientations {
                 if supportedOrientations.contains(orientation) {
+                    self.createBannerConstraints(for: self.bannerPosition)
                     self.frame = CGRect(x: self.frame.origin.x, y: self.frame.origin.y, width: self.appWindow.frame.width, height: self.frame.height)
                     self.bannerPositionFrame?.updateFrameWidth(width: self.appWindow.frame.width)
                 }
@@ -420,6 +435,28 @@ public class BaseNotificationBanner: UIView {
     */
     internal func updateMarqueeLabelsDurations() {
         titleLabel?.speed = .duration(CGFloat(duration - 3))
+    }
+    
+    private func getSpacerHeight() -> CGFloat {
+        if shouldAdjustSpacerHeight {
+            if NotificationBannerUtilities.isiPhoneX()
+                && UIApplication.shared.statusBarOrientation.isPortrait
+                && parentViewController == nil {
+                return 40.0
+            }
+            else if NotificationBannerUtilities.isiPhoneX()
+                && UIApplication.shared.statusBarOrientation.isPortrait
+                && parentViewController != nil {
+                if bannerPosition == .top {
+                    return 20.0
+                }
+                else {
+                    return 30.0
+                }
+            }
+        }
+        
+        return 10.0
     }
     
 }
