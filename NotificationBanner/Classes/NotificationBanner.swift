@@ -151,6 +151,8 @@ public class NotificationBanner: BaseNotificationBanner {
         customView.snp.makeConstraints { (make) in
             make.edges.equalTo(contentView)
         }
+        
+        spacerView.backgroundColor = customView.backgroundColor ?? customView.subviews.first?.backgroundColor
     }
     
     required public init?(coder aDecoder: NSCoder) {
